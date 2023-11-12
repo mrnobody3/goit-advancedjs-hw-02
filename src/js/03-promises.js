@@ -6,32 +6,15 @@ formRef.addEventListener('submit', onSubmitFn);
 
 function createPromise(position, delay) {
   const shouldResolve = Math.random() > 0.3;
-  const promise = new Promise((fulfill, reject) => {
+  return new Promise((fulfill, reject) => {
     setTimeout(() => {
       if (shouldResolve) {
-        fulfill(`✅ Fulfilled promise ${position} in ${delay}ms`);
+        fulfill({ position, delay });
       } else {
-        reject(`❌ Rejected promise ${position} in ${delay}ms`);
+        reject({ position, delay });
       }
     }, delay);
   });
-
-  promise
-    .then(result => {
-      iziToast.show({
-        title: 'Warning',
-        message: result,
-        color: 'green',
-      });
-    })
-    .catch(result => {
-      iziToast.show({
-        title: 'Error',
-        message: result,
-        color: 'red',
-        position: 'topRight',
-      });
-    });
 }
 function onSubmitFn(e) {
   e.preventDefault();
@@ -40,7 +23,22 @@ function onSubmitFn(e) {
   const step = Number(formData.get('step'));
   const amount = formData.get('amount');
   for (let i = 1; i <= amount; i += 1) {
-    createPromise(i, delay);
+    createPromise(i, delay)
+      .then(({ position, delay }) => {
+        iziToast.show({
+          title: 'Warning',
+          message: `✅ Fulfilled promise ${position} in ${delay}ms`,
+          color: 'green',
+        });
+      })
+      .catch(({ position, delay }) => {
+        iziToast.show({
+          title: 'Error',
+          message: `❌ Rejected promise ${position} in ${delay}ms`,
+          color: 'red',
+          position: 'topRight',
+        });
+      });
     delay += step;
   }
 }

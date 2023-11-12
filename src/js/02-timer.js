@@ -8,6 +8,7 @@ const ref = {
   hoursEl: document.querySelector('span[data-hours]'),
   minutesEl: document.querySelector('span[data-minutes]'),
   secondsEl: document.querySelector('span[data-seconds]'),
+  datePickerEl: document.querySelector('#datetime-picker'),
 };
 
 let newDate = null;
@@ -39,11 +40,14 @@ flatpickr('#datetime-picker', {
 });
 
 function onTimerStart() {
+  onSetAttributeDisabled(ref.btn);
+  onSetAttributeDisabled(ref.datePickerEl);
   intervalId = setInterval(() => {
     let leftTime = convertMs(newDate - Date.now());
 
     if (newDate < Date.now()) {
       clearInterval(intervalId);
+      onRemoveAttributeDisabled(ref.datePickerEl);
       return init();
     }
     init(leftTime);
