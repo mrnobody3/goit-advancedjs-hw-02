@@ -41,4 +41,5 @@ function onSubmitFn(e) {
       });
     delay += step;
   }
+  formRef.reset();
 }
